@@ -28,11 +28,15 @@ embeddings = OpenAIEmbeddings(model="text-embedding-3-large",api_key=os.environ.
 vector_store = PineconeVectorStore(index=index, embedding=embeddings)
 
 # initialize chat history
+# initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+    # This is your internal instruction to the AI
     st.session_state.messages.append(SystemMessage("You are an assistant for question-answering tasks. "))
 
+    # This is the message the user will see from the bot when they open the app
+    st.session_state.messages.append(AIMessage("Hello! I'm Alexander's RAG assistant! Ask me anything about Alexander Lin."))
 # display chat messages from history on app rerun
 for message in st.session_state.messages:
     if isinstance(message, HumanMessage):
@@ -70,10 +74,10 @@ if prompt:
     docs_text = "".join(d.page_content for d in docs)
 
     # creating the system prompt
-    system_prompt = """You are an assistant for question-answering tasks. 
-    Use the following pieces of retrieved context to answer the question. 
-    If you don't know the answer, just say that you don't know. 
-    Use three sentences maximum and keep the answer concise.
+    system_prompt = """You are an assistant for question-answering tasks.
+    Use the following pieces of retrieved context to answer the question.
+    If you don't know the answer, just say that you don't know.
+    Elaborate on the answer with all relevant details from the provided context.
     Context: {context}:"""
 
     # Populate the system prompt with the retrieved context
