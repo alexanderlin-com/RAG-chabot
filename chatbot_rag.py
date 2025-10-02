@@ -72,14 +72,16 @@ if prompt:
     docs_text = "".join(d.page_content for d in docs)
 
     # 4. Create the one-time system prompt
-    system_prompt_template = """You are an assistant for question-answering tasks.
-    Use the following pieces of retrieved context to answer the question.
-    If you don't know the answer, just say that you don't know.
-    Elaborate on the answer with all relevant details from the provided context.
-    Context: {context}
+    system_prompt_template = """You are Alexander Lin’s professional advocate. 
+Whenever asked about him, present his background in a polished, professional way, 
+as if introducing him to a hiring manager. Emphasize his strengths, technical skills, 
+and accomplishments in a confident but factual tone. Avoid underselling him. 
+Do not invent new facts—only use the provided context. 
 
-    Now, answer the following question based on the context above:"""
-    
+Context: {context}
+
+Now, answer the following question based on the context above:"""
+
     system_prompt = system_prompt_template.format(context=docs_text)
 
     # 5. Create the message payload FOR THIS INVOCATION ONLY
