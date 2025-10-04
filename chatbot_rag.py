@@ -94,10 +94,17 @@ Now, answer the following question based on the context above:"""
     messages_for_llm.append(HumanMessage(prompt))
 
 
-    # 6. Invoke the LLM with the clean, temporary payload
-    result = llm.invoke(messages_for_llm).content
-
-    # 7. Add only the AI's response to the session state and display it
-    st.session_state.messages.append(AIMessage(result))
+    # 6. Stream the response token-by-token
     with st.chat_message("assistant"):
-        st.markdown(result)
+        message_placeholder = st.empty()
+        full_response = ""
+
+        # Stream from LangChain's ChatOpenAI
+        for chunk in llm.stream(messages_for_llm):
+            delta = getattr(chunk, "content", "") or ""
+            if delta:
+                full_response += delta
+                message_placeholder.markdown(full_response)
+
+    # 7. Save the final AI message to history
+    st.session_state.messages.append(AIMessage(full_response))
